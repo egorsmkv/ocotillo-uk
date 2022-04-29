@@ -1,4 +1,5 @@
 import os
+import pathlib
 from time import time
 
 import torch
@@ -14,17 +15,18 @@ def load_model(device, use_torchscript=False):
         model = trace_torchscript_model('cuda' if 'cuda' in device else 'cpu')
         model = model.to(device)
     else:
-        model = Wav2Vec2ForCTC.from_pretrained("jbetker/wav2vec2-large-robust-ft-libritts-voxpopuli").to(device)
+        model = Wav2Vec2ForCTC.from_pretrained("Yehor/wav2vec2-xls-r-1b-uk-with-lm").to(device)
         model.config.return_dict = False
         model.eval()
-    feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained(f"facebook/wav2vec2-large-960h")
-    tokenizer = Wav2Vec2CTCTokenizer.from_pretrained('jbetker/tacotron_symbols')
+    feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained(f"Yehor/wav2vec2-xls-r-1b-uk-with-lm")
+    tokenizer = Wav2Vec2CTCTokenizer.from_pretrained('Yehor/wav2vec2-xls-r-1b-uk-with-lm')
     processor = Wav2Vec2Processor(feature_extractor, tokenizer)
     return model, processor
 
 
 def trace_torchscript_model(dev_type='cpu', load_from_cache=True):
-    output_trace_cache_file = f'torchscript/traced_model_{dev_type}.pth'
+    current_dir = pathlib.Path(__file__).parent
+    output_trace_cache_file = f'{current_dir}/torchscript/traced_model_{dev_type}.pth'
     if load_from_cache and os.path.exists(output_trace_cache_file):
         return torch.jit.load(output_trace_cache_file)
 
