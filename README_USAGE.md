@@ -1,11 +1,18 @@
 # Usage
 
-## Run `transcribe.py`
+## Install dependencies
 
 ```bash
 git clone https://github.com/egorsmkv/ocotillo-uk
 cd ocotillo-uk
 
+pipenv install
+pipenv shell
+```
+
+## Run `transcribe.py`
+
+```bash
 # extend PYTHONPATH
 export PYTHONPATH=`pwd`:$PYTHONPATH
 
